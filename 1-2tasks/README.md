@@ -1,10 +1,14 @@
 # infinite-tools
 
-Невеликий пакет з генераторами та утилітою-ітератором з таймаутом.
-
 Запуск прикладу:
+запускати в PowerShell/terminal  
 
-```bash
-python -m pip install -e .
+вписувати покроково
+
+python -m venv venv
+
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned -Force
+
+pip install -e .
+
 python example_usage/main.py
-```
