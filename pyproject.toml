@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "infinite-tools"
+version = "0.1.0"
+description = "Набір утиліт: генератори та ітератори з таймаутом"
+authors = [ { name = "autogen" } ]
+readme = "README.md"
+requires-python = ">=3.8"
+
+[tool.setuptools.packages.find]
+where = ["."]
