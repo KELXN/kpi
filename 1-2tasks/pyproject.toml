@@ -4,11 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "infinite-tools"
-version = "0.1.0"
-description = "Набір утиліт: генератори та ітератори з таймаутом"
-authors = [ { name = "autogen" } ]
-readme = "README.md"
+version = "0.3.0"
+description = "Пакет для практичних завдань KPI: Generators, Iterators, Memoization та інші"
+authors = [{ name = "KELXN", email = "your.email@example.com" }]
+license = { text = "MIT" }
 requires-python = ">=3.8"
+dependencies = []
 
 [tool.setuptools.packages.find]
 where = ["."]
