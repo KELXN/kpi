@@ -18,7 +18,7 @@ def timeout_iterator(
             process_func(value)
             count += 1
             if time.time() - start_time > timeout_seconds:
-                print(f"\n⏰ Таймаут {timeout_seconds} сек. Оброблено елементів: {count}")
+                print(f"\nТаймаут {timeout_seconds} сек. елементів оброблено: {count}")
                 break
     except Exception as e:
         print(f"Помилка: {e}")
