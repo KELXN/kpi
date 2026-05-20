@@ -23,6 +23,8 @@ __all__ = [
     "large_data_stream", "process_stream",
     # таск 7
     "EventEmitter", "Subscription",
+    # таск 8
+    "AuthProxy", "ApiKeyStrategy", "BearerTokenStrategy",
 ]
 # таск 5
 from .async_array import async_map, callback_async_map, async_map_with_abort
@@ -30,3 +32,5 @@ from .async_array import async_map, callback_async_map, async_map_with_abort
 from .stream_processor import large_data_stream, process_stream
 # таск 7
 from .event_emitter import EventEmitter, Subscription
+# таск 8
+from .auth_proxy import AuthProxy, ApiKeyStrategy, BearerTokenStrategy

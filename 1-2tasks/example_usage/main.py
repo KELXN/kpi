@@ -5,7 +5,11 @@ from infinite_tools.memoization import memoize
 from infinite_tools.priority_queue import BiDirectionalPriorityQueue
 from infinite_tools.async_array import async_map, callback_async_map, async_map_with_abort
 from infinite_tools.event_emitter import EventEmitter
+from infinite_tools.auth_proxy import AuthProxy, ApiKeyStrategy, BearerTokenStrategy
+import json
 import time
+from http.server import BaseHTTPRequestHandler, HTTPServer
+import threading
 from infinite_tools.stream_processor import large_data_stream, process_stream
 
 
@@ -113,6 +117,65 @@ def main():
     emitter.emit("message", {"from": "Вася", "to": "Нікіта", "text": "Це останнє повідомлення для Нікіти"})
 
     print("\nТаск 7 виконано")
+
+    print("\n" + "="*60)
+    print("Task 8: Implementing an Authentication Proxy")
+
+    class MockAPIHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            parsed = self.path.split("?", 1)
+            query = parsed[1] if len(parsed) > 1 else ""
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            response = {
+                "path": parsed[0],
+                "query": query,
+                "headers": dict(self.headers),
+                "message": "API response received",
+            }
+            self.wfile.write(json.dumps(response, ensure_ascii=False).encode("utf-8"))
+
+        def log_message(self, format, *args):
+            return
+
+    api_port = 8081
+    server = HTTPServer(("localhost", api_port), MockAPIHandler)
+    server_thread = threading.Thread(target=server.serve_forever, daemon=True)
+    server_thread.start()
+
+    token_counter = {"value": 0}
+
+    def refresh_token() -> str:
+        token_counter["value"] += 1
+        return f"refreshed-token-{token_counter['value']}"
+
+    proxy = AuthProxy(f"http://localhost:{api_port}", rate_limit=3, logger=print)
+    bearer_strategy = BearerTokenStrategy("initial-token", expires_in=1, refresh_callback=refresh_token)
+    api_key_strategy = ApiKeyStrategy("super-secret-key", inject_into="header")
+
+    proxy.register_strategy("bearer", bearer_strategy)
+    proxy.register_strategy("api_key", api_key_strategy)
+    proxy.set_strategy("bearer")
+
+    print("Sending request with Bearer token strategy...")
+    response1 = proxy.send_request("/data", params={"query": "first"})
+    print("Response 1:", response1)
+
+    time.sleep(1.5)
+    print("Sending request after token expiration to trigger refresh...")
+    response2 = proxy.send_request("/data", params={"query": "refresh"})
+    print("Response 2:", response2)
+
+    proxy.set_strategy("api_key")
+    print("Switching to API key strategy...")
+    response3 = proxy.send_request("/data", params={"query": "api-key"})
+    print("Response 3:", response3)
+
+    print("Proxy history entries:", len(list(proxy.get_history())))
+    server.shutdown()
+    server.server_close()
+    print("\nТаск 8 виконано")
 
 if __name__ == "__main__":
     main()
