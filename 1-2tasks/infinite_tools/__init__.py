@@ -21,8 +21,12 @@ __all__ = [
     "async_map", "callback_async_map", "async_map_with_abort",
     # таск 6
     "large_data_stream", "process_stream",
+    # таск 7
+    "EventEmitter", "Subscription",
 ]
 # таск 5
 from .async_array import async_map, callback_async_map, async_map_with_abort
 # таск 6
 from .stream_processor import large_data_stream, process_stream
+# таск 7
+from .event_emitter import EventEmitter, Subscription

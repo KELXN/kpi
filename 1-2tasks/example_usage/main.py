@@ -4,6 +4,7 @@ from infinite_tools.timeout import timeout_iterator
 from infinite_tools.memoization import memoize
 from infinite_tools.priority_queue import BiDirectionalPriorityQueue
 from infinite_tools.async_array import async_map, callback_async_map, async_map_with_abort
+from infinite_tools.event_emitter import EventEmitter
 import time
 from infinite_tools.stream_processor import large_data_stream, process_stream
 
@@ -82,6 +83,36 @@ def main():
     result = asyncio.run(process_stream(large_data_stream(100000)))
     print("Result:", result)
     print("\nТаск 6 виконано")
+
+    print("\n" + "="*60)
+    print("Task 7: Reactive Communication with EventEmitter")
+
+    emitter = EventEmitter()
+
+    def logger(event_payload):
+        print("Logger received:", event_payload)
+
+    def alice_listener(payload):
+        if payload and payload.get("to") == "Вася":
+            print("Вася got message:", payload["text"])
+
+    def bob_listener(payload):
+        if payload and payload.get("to") == "Нікіта":
+            print("Нікіта got message:", payload["text"])
+
+    log_subscription = emitter.subscribe("message", logger)
+    alice_subscription = emitter.subscribe("message", alice_listener)
+    bob_subscription = emitter.subscribe("message", bob_listener)
+
+    emitter.emit("message", {"from": "Нікіта", "to": "Вася", "text": "Привіт, Вася!"})
+    emitter.emit("message", {"from": "Вася", "to": "Нікіта", "text": "Привіт, Нікіта!"})
+
+    bob_subscription.unsubscribe()
+    print("Нікіта відписався")
+
+    emitter.emit("message", {"from": "Вася", "to": "Нікіта", "text": "Це останнє повідомлення для Нікіти"})
+
+    print("\nТаск 7 виконано")
 
 if __name__ == "__main__":
     main()
