@@ -6,6 +6,13 @@ from infinite_tools.priority_queue import BiDirectionalPriorityQueue
 from infinite_tools.async_array import async_map, callback_async_map, async_map_with_abort
 from infinite_tools.event_emitter import EventEmitter
 from infinite_tools.auth_proxy import AuthProxy, ApiKeyStrategy, BearerTokenStrategy
+from infinite_tools.logging_decorator import (
+    log,
+    ConsoleLogHandler,
+    FileLogHandler,
+    ExternalServiceLogHandler,
+    JSONLogFormatter,
+)
 import json
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -176,6 +183,50 @@ def main():
     server.shutdown()
     server.server_close()
     print("\nТаск 8 виконано")
+
+    print("\n" + "="*60)
+    print("Task 9: Logging Decorator with Configurable Log Levels")
+
+    external_log_entries = []
+
+    def external_sink(message: str) -> None:
+        external_log_entries.append(message)
+
+    @log(level="INFO", include_timing=True)
+    def multiply(a, b):
+        return a * b
+
+    @log(level="ERROR", output="file", filename="task9_errors.log")
+    def fail_when_negative(value):
+        if value < 0:
+            raise ValueError("Negative values are not allowed")
+        return value
+
+    @log(
+        level="DEBUG",
+        handlers=[ConsoleLogHandler(), ExternalServiceLogHandler(external_sink)],
+        formatter=JSONLogFormatter(),
+        include_timing=True,
+    )
+    async def async_add(a, b):
+        await asyncio.sleep(0.05)
+        return a + b
+
+    print("multiply result:", multiply(6, 7))
+
+    try:
+        fail_when_negative(-3)
+    except ValueError as exc:
+        print("Caught error:", exc)
+
+    print("Running async_add...")
+    print("async_add result:", asyncio.run(async_add(3, 4)))
+
+    print("External log entries:", len(external_log_entries))
+    print("Sample external entry:", external_log_entries[0] if external_log_entries else "none")
+    print("Logged errors stored in task9_errors.log")
+
+    print("\nТаск 9 виконано")
 
 if __name__ == "__main__":
     main()
