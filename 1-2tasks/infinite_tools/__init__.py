@@ -6,18 +6,23 @@ from .generators import fibonacci_generator, color_cycle_generator, round_robin_
 from .timeout import timeout_iterator
 from .memoization import memoize
 
-# Task 4
+# таск 4
 from .priority_queue import BiDirectionalPriorityQueue, create_priority_queue
 
 __all__ = [
-    # Task 1-2
+    # таск 1-2
     "fibonacci_generator", "color_cycle_generator", "round_robin_generator",
     "timeout_iterator",
-    # Task 3
+    # таск 3
     "memoize",
-    # Task 4
+    # таск 4
     "BiDirectionalPriorityQueue", "create_priority_queue",
-    #task 5
-    "async_map", "callback_async_map", "async_map_with_abort"
+    # таск 5
+    "async_map", "callback_async_map", "async_map_with_abort",
+    # таск 6
+    "large_data_stream", "process_stream",
 ]
+# таск 5
 from .async_array import async_map, callback_async_map, async_map_with_abort
+# таск 6
+from .stream_processor import large_data_stream, process_stream

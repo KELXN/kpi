@@ -5,19 +5,20 @@ from infinite_tools.memoization import memoize
 from infinite_tools.priority_queue import BiDirectionalPriorityQueue
 from infinite_tools.async_array import async_map, callback_async_map, async_map_with_abort
 import time
+from infinite_tools.stream_processor import large_data_stream, process_stream
 
 
 def main():
     print("=== Infinite Tools - KPI Tasks ===\n")
 
-    # Task 1 + 2
+    # таск 1 + 2
     print("Task 1-2: Generators + Timeout")
     print("Fibonacci (2 сек):")
     timeout_iterator(fibonacci_generator(), 2)
     
     print("\n" + "="*60)
 
-    # Task 3
+    # таск 3
     print("Task 3: Memoization")
     @memoize(maxsize=100, policy="lru")
     def fib(n):
@@ -28,7 +29,7 @@ def main():
     print(f"fib(35) = {fib(35)}")
     print(f"Час: {time.time()-start:.4f} сек (з кешем — швидко)\n")
 
-    # Task 4
+    # таск 4
     print("Task 4: Bi-Directional Priority Queue")
     pq = BiDirectionalPriorityQueue()
 
@@ -48,7 +49,7 @@ def main():
 
     print("\n" + "="*60)
 
-    # Task 5
+    # таск5
     print("Task 5: Async Array Function Variants")
     values = [1, 2, 3, 4, 5]
 
@@ -75,6 +76,12 @@ def main():
 
     print("\nТаск 5 виконано")
 
+    print("\n" + "="*60)
+    print("Task 6: Large Data Processing with Async Stream")
+
+    result = asyncio.run(process_stream(large_data_stream(100000)))
+    print("Result:", result)
+    print("\nТаск 6 виконано")
 
 if __name__ == "__main__":
     main()

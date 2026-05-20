@@ -23,7 +23,6 @@ class Memoizer:
             key = self._make_key(args, kwargs)
             now = time.time()
 
-            # Перевірка TTL
             if key in self.cache:
                 result, timestamp, count = self.cache[key]
                 if self.ttl and (now - timestamp > self.ttl):
@@ -34,7 +33,7 @@ class Memoizer:
                         self.order.move_to_end(key)
                     return result
 
-            # Обчислення
+
             result = func(*args, **kwargs)
             self.cache[key] = (result, now, 1)
 
