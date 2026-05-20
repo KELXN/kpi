@@ -1,7 +1,9 @@
+import asyncio
 from infinite_tools.generators import fibonacci_generator, color_cycle_generator
 from infinite_tools.timeout import timeout_iterator
 from infinite_tools.memoization import memoize
 from infinite_tools.priority_queue import BiDirectionalPriorityQueue
+from infinite_tools.async_array import async_map, callback_async_map, async_map_with_abort
 import time
 
 
@@ -43,6 +45,35 @@ def main():
     print("Найновіший (newest):", pq.dequeue_newest())
 
     print("\n Таск 4 виконано")
+
+    print("\n" + "="*60)
+
+    # Task 5
+    print("Task 5: Async Array Function Variants")
+    values = [1, 2, 3, 4, 5]
+
+    async def async_double(value):
+        await asyncio.sleep(0.1)
+        return value * 2
+
+    def sync_double(value):
+        return value * 2
+
+    print("\nAsync/await version (async_map with async function):")
+    print(asyncio.run(async_map(async_double, values)))
+
+    print("\nAsync/await version (async_map with sync function):")
+    print(asyncio.run(async_map(sync_double, values)))
+
+    print("\nCallback-style version (callback_async_map):")
+    callback_async_map(sync_double, values, lambda result: print(result))
+
+    print("\nAbortable version (async_map_with_abort):")
+    abort_event = asyncio.Event()
+    abort_event.set()
+    print(asyncio.run(async_map_with_abort(sync_double, values, abort_event)))
+
+    print("\nТаск 5 виконано")
 
 
 if __name__ == "__main__":

@@ -17,4 +17,7 @@ __all__ = [
     "memoize",
     # Task 4
     "BiDirectionalPriorityQueue", "create_priority_queue",
+    #task 5
+    "async_map", "callback_async_map", "async_map_with_abort"
 ]
+from .async_array import async_map, callback_async_map, async_map_with_abort
